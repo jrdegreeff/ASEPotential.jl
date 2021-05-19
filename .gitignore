@@ -2,3 +2,8 @@
 *.jl.cov
 *.jl.mem
 /Manifest.toml
+
+*dftk.json
+*dftk.log
+*dftk.checkpoint.jld2
+*dftk.scfres.jld2

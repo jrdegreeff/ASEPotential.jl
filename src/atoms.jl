@@ -3,12 +3,12 @@ function atoms(symbol::String, positions::Vector{Vector{Real}})
     return pyAtoms(symbol, positions=positions, pbc=true)
 end
 
-function readAtoms(path::String)
+function read_atoms(path::String)
     read = pyimport("ase.io").read
     return read(path)
 end
 
-function writeAtoms(path::String, atoms::PyObject)
+function write_atoms(path::String, atoms::PyObject)
     @assert pyisinstance(atoms, pyimport("ase").Atoms)
     write = pyimport("ase.io").write
     return write(path, atoms)
