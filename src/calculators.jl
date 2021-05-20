@@ -32,8 +32,8 @@ end
     xc::Union{String, Missing} = missing
     n_mpi::Union{Integer, Missing} = missing
     n_threads::Union{Integer, Missing} = missing
-    DFTKCalculatorParameters(ecut::Quantity, functionals, kpts, mixing, nbands, pps, scftol, smearing, xc, n_mpi, n_threads) = new(ustrip(u"eV", ecut), functionals, kpts, mixing, nbands, pps, scftol, smearing, xc, n_mpi, n_threads)
 end
+DFTKCalculatorParameters(ecut::Quantity, functionals, kpts, mixing, nbands, pps, scftol, smearing, xc, n_mpi, n_threads) = DFTKCalculatorParameters(ustrip(u"eV", ecut), functionals, kpts, mixing, nbands, pps, scftol, smearing, xc, n_mpi, n_threads)
 
 function configure_calculator!(atoms::PyObject, parameters::DFTKCalculatorParameters)
     DFTKcalc = pyimport("asedftk").DFTK
