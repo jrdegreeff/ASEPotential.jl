@@ -16,8 +16,16 @@ function get_potential_energy(symbol::String, positions::Vector{Vector{Real}}, p
     get_potential_energy(atoms(symbol, positions), parameters)
 end
 
+function get_potential_energy(symbol::String, positions::Vector{Vector{Real}}, cell::Vector{Real}, parameters::ASECalculatorParameters)
+    get_potential_energy(atoms(symbol, positions, cell), parameters)
+end
+
 function get_forces(symbol::String, positions::Vector{Vector{Real}}, parameters::ASECalculatorParameters)
     get_forces(atoms(symbol, positions), parameters)
+end
+
+function get_forces(symbol::String, positions::Vector{Vector{Real}}, cell::Vector{Real}, parameters::ASECalculatorParameters)
+    get_forces(atoms(symbol, positions, cell), parameters)
 end
 
 @with_kw struct DFTKCalculatorParameters <: ASECalculatorParameters
@@ -36,6 +44,22 @@ end
 DFTKCalculatorParameters(ecut::Quantity, functionals, kpts, mixing, nbands, pps, scftol, smearing, xc, n_mpi, n_threads) = DFTKCalculatorParameters(ustrip(u"eV", ecut), functionals, kpts, mixing, nbands, pps, scftol, smearing, xc, n_mpi, n_threads)
 
 function configure_calculator!(atoms::PyObject, parameters::DFTKCalculatorParameters)
-    DFTKcalc = pyimport("asedftk").DFTK
-    atoms.calc = DFTKcalc(; (v=>getfield(parameters, v) for v in fieldnames(DFTKCalculatorParameters) if getfield(parameters, v) !== missing)...)
+    DFTKCalc = pyimport("asedftk").DFTK
+    atoms.calc = DFTKCalc(; (v=>getfield(parameters, v) for v in fieldnames(DFTKCalculatorParameters) if getfield(parameters, v) !== missing)...)
+end
+
+@with_kw struct LAMMPSCalculatorParameters <: ASECalculatorParameters
+    files::Union{Vector{String}, Missing} = missing
+    parameters::Union{Dict, Missing} = missing
+    specorder::Union{Vector{Integer}, Missing} = missing
+    keep_tmp_file::Union{Bool, Missing} = missing
+    tmp_dir::Union{String, Missing} = missing
+    no_data_file::Union{Bool, Missing} = missing
+    keep_alive::Union{Bool, Missing} = missing
+    always_triclinic::Union{Bool, Missing} = missing
+end
+
+function configure_calculator!(atoms::PyObject, parameters::LAMMPSCalculatorParameters)
+    LAMPPSCalc = pyimport("ase.calculators.lammpsrun").LAMMPS
+    atoms.calc = LAMPPSCalc(; (v=>getfield(parameters, v) for v in fieldnames(LAMMPSCalculatorParameters) if getfield(parameters, v) !== missing)...)
 end

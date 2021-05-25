@@ -1,6 +1,26 @@
-function atoms(symbol::String, positions::Vector{Vector{Real}})
+function atom(symbol::String, position::Vector{<: Real})
+    pyAtom = pyimport("ase").Atom
+    return pyAtom(symbol, position)
+end
+
+function atoms(symbol::String, positions::Vector{Vector{<: Real}})
     pyAtoms = pyimport("ase").Atoms
-    return pyAtoms(symbol, positions=positions, pbc=true)
+    return pyAtoms(symbol, positions, pbc=true)
+end
+
+function atoms(symbol::String, positions::Vector{Vector{<: Real}}, cell::Vector{<: Real})
+    pyAtoms = pyimport("ase").Atoms
+    return pyAtoms(symbol, positions, cell=cell, pbc=true)
+end
+
+function atoms(atoms::Vector{PyObject})
+    pyAtoms = pyimport("ase").Atoms
+    return pyAtoms(atoms, pbc=true)
+end
+
+function atoms(atoms::Vector{PyObject}, cell::Vector{<: Real})
+    pyAtoms = pyimport("ase").Atoms
+    return pyAtoms(atoms, cell=cell, pbc=true)
 end
 
 function read_atoms(path::String)
