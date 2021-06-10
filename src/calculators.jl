@@ -50,7 +50,7 @@ end
 
 @with_kw struct LAMMPSCalculatorParameters <: ASECalculatorParameters
     files::Union{Vector{String}, Missing} = missing
-    parameters::Union{Dict, Missing} = missing
+    parameters::Dict{String, Union{String, Vector{String}}} = Dict{String, Union{String, Vector{String}}}()
     specorder::Union{Vector{Integer}, Missing} = missing
     keep_tmp_file::Union{Bool, Missing} = missing
     tmp_dir::Union{String, Missing} = missing
@@ -62,4 +62,25 @@ end
 function configure_calculator!(atoms::PyObject, parameters::LAMMPSCalculatorParameters)
     LAMPPSCalc = pyimport("ase.calculators.lammpsrun").LAMMPS
     atoms.calc = LAMPPSCalc(; (v=>getfield(parameters, v) for v in fieldnames(LAMMPSCalculatorParameters) if getfield(parameters, v) !== missing)...)
+end
+
+struct SNAPCalculatorParameters <: ASECalculatorParameters
+    lammps_parameters::LAMMPSCalculatorParameters
+    twojmax::Real
+    rcutfac::Real
+    rfac0::Real
+    rmin0::Real
+    radelem1::Real
+    radelem2::Real
+    wj1::Real
+    wj2::Real
+    quadratic::Real
+    bzero::Real
+    switch::Real
+end
+
+function configure_calculator!(atoms::PyObject, parameters::SNAPCalculatorParameters)
+    lammps_parameters = parameters.lammps_parameters
+    # TODO
+    configure_calculator!(atoms, lammps_parameters)
 end
