@@ -13,12 +13,12 @@ function atoms(symbol::String, positions::Vector{Vector{<: Real}}, cell::Vector{
     return pyAtoms(symbol, positions, cell=cell, pbc=true)
 end
 
-function atoms(atoms::Vector{PyObject})
+function atoms(atoms::Vector)
     pyAtoms = pyimport("ase").Atoms
     return pyAtoms(atoms, pbc=true)
 end
 
-function atoms(atoms::Vector{PyObject}, cell::Vector{<: Real})
+function atoms(atoms::Vector, cell::Vector{<: Real})
     pyAtoms = pyimport("ase").Atoms
     return pyAtoms(atoms, cell=cell, pbc=true)
 end
