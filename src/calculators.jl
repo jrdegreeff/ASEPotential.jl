@@ -28,40 +28,40 @@ function get_forces(symbol::String, positions::Vector{Vector{Real}}, cell::Vecto
     get_forces(atoms(symbol, positions, cell), parameters)
 end
 
-@with_kw struct DFTKCalculatorParameters <: ASECalculatorParameters
-    ecut::Union{Real, Missing} = missing
-    functionals::Union{AbstractVector{String}, Missing} = missing
-    kpts::Union{Tuple, AbstractArray, AbstractFloat, Missing} = missing
-    mixing::Union{String, Missing} = missing
-    nbands::Union{Integer, Missing} = missing
-    pps::Union{String, Missing} = missing
-    scftol::Union{AbstractFloat, Missing} = missing
-    smearing::Union{Tuple{String, Real}, Tuple{String, Real, Integer}, Missing} = missing
-    xc::Union{String, Missing} = missing
-    n_mpi::Union{Integer, Missing} = missing
-    n_threads::Union{Integer, Missing} = missing
+Base.@kwdef struct DFTKCalculatorParameters <: ASECalculatorParameters
+    ecut::Union{Real,Nothing} = nothing
+    functionals::Union{AbstractVector{String},Nothing} = nothing
+    kpts::Union{Tuple,AbstractArray,AbstractFloat,Nothing} = nothing
+    mixing::Union{String,Nothing} = nothing
+    nbands::Union{Integer,Nothing} = nothing
+    pps::Union{String,Nothing} = nothing
+    scftol::Union{AbstractFloat,Nothing} = nothing
+    smearing::Union{Tuple{String,Real},Tuple{String,Real,Integer},Nothing} = nothing
+    xc::Union{String,Nothing} = nothing
+    n_mpi::Union{Integer,Nothing} = nothing
+    n_threads::Union{Integer,Nothing} = nothing
 end
 DFTKCalculatorParameters(ecut::Quantity, functionals, kpts, mixing, nbands, pps, scftol, smearing, xc, n_mpi, n_threads) = DFTKCalculatorParameters(ustrip(u"eV", ecut), functionals, kpts, mixing, nbands, pps, scftol, smearing, xc, n_mpi, n_threads)
 
 function configure_calculator!(atoms::PyObject, parameters::DFTKCalculatorParameters)
     DFTKCalc = pyimport("asedftk").DFTK
-    atoms.calc = DFTKCalc(; (v=>getfield(parameters, v) for v in fieldnames(DFTKCalculatorParameters) if getfield(parameters, v) !== missing)...)
+    atoms.calc = DFTKCalc(; (v => getfield(parameters, v) for v in fieldnames(DFTKCalculatorParameters) if getfield(parameters, v) !== nothing)...)
 end
 
-@with_kw struct LAMMPSCalculatorParameters <: ASECalculatorParameters
-    files::Union{Vector{String}, Missing} = missing
-    parameters::Dict{String, Union{String, Vector{String}}} = Dict{String, Union{String, Vector{String}}}()
-    specorder::Union{Vector{Integer}, Missing} = missing
-    keep_tmp_file::Union{Bool, Missing} = missing
-    tmp_dir::Union{String, Missing} = missing
-    no_data_file::Union{Bool, Missing} = missing
-    keep_alive::Union{Bool, Missing} = missing
-    always_triclinic::Union{Bool, Missing} = missing
+Base.@kwdef struct LAMMPSCalculatorParameters <: ASECalculatorParameters
+    files::Union{Vector{String},Nothing} = nothing
+    parameters::Dict{String,Union{String,Vector{String}}} = Dict{String,Union{String,Vector{String}}}()
+    specorder::Union{Vector{Integer},Nothing} = nothing
+    keep_tmp_file::Union{Bool,Nothing} = nothing
+    tmp_dir::Union{String,Nothing} = nothing
+    no_data_file::Union{Bool,Nothing} = nothing
+    keep_alive::Union{Bool,Nothing} = nothing
+    always_triclinic::Union{Bool,Nothing} = nothing
 end
 
 function configure_calculator!(atoms::PyObject, parameters::LAMMPSCalculatorParameters)
     LAMPPSCalc = pyimport("ase.calculators.lammpsrun").LAMMPS
-    atoms.calc = LAMPPSCalc(; (v=>getfield(parameters, v) for v in fieldnames(LAMMPSCalculatorParameters) if getfield(parameters, v) !== missing)...)
+    atoms.calc = LAMPPSCalc(; (v => getfield(parameters, v) for v in fieldnames(LAMMPSCalculatorParameters) if getfield(parameters, v) !== nothing)...)
 end
 
 struct SNAPCalculatorParameters <: ASECalculatorParameters

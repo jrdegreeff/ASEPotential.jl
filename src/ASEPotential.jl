@@ -1,6 +1,5 @@
 module ASEPotential
 
-using Parameters
 using PyCall
 using Unitful
 
