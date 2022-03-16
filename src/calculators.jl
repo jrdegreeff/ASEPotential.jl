@@ -2,6 +2,7 @@ struct ASECalculator
     package::String
     class::Symbol
     kwargs::Dict{Symbol,Any}
+    ASECalculator(package::String, class::Symbol; kwargs...) = new(package, class, Dict{Symbol,Any}(kwargs...))
 end
 
 function configure_calculator!(atoms::PyObject, calculator::ASECalculator)
