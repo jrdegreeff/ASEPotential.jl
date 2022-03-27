@@ -5,9 +5,14 @@
 LocalPreferences.toml
 Manifest.toml
 
+# Directory used for storing artifacts from examples
+artifacts/
+
+# DFTK artifacts
 dftk.json
 dftk.log
 dftk.checkpoint.jld2
 dftk.scfres.jld2
 
+# LAMMPS artifacts
 log.lammps

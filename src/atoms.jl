@@ -1,35 +1,15 @@
-function atom(symbol::String, position::Vector{<:Real})
-    pyAtom = pyimport("ase").Atom
-    return pyAtom(symbol, position)
-end
+ASEAtom(symbol::String, position::AbstractVector{<:Real}) = ASE.Atom(symbol, position)
+ASEAtom(; kwargs...) = ASE.Atom(; kwargs...)
 
-function atoms(symbol::String, positions::Vector{Vector{<:Real}})
-    pyAtoms = pyimport("ase").Atoms
-    return pyAtoms(symbol, positions, pbc = true)
-end
+ASEAtoms(symbols, positions) = ASE.Atoms(symbols, positions; pbc = true)
+ASEAtoms(symbols, positions, cell) = ASE.Atoms(symbols, positions; cell = cell, pbc = true)
+ASEAtoms(atoms::AbstractVector{PyObject}) = ASE.Atoms(atoms; pbc = true)
+ASEAtoms(atoms::AbstractVector{PyObject}, cell) = ASE.Atoms(atoms; cell = cell, pbc = true)
+ASEAtoms(; kwargs...) = ASE.Atoms(; kwargs...)
 
-function atoms(symbol::String, positions::Vector{Vector{<:Real}}, cell::Vector{<:Real})
-    pyAtoms = pyimport("ase").Atoms
-    return pyAtoms(symbol, positions, cell = cell, pbc = true)
-end
-
-function atoms(atoms::Vector{PyObject})
-    pyAtoms = pyimport("ase").Atoms
-    return pyAtoms(atoms, pbc = true)
-end
-
-function atoms(atoms::Vector{PyObject}, cell::Vector{<:Real})
-    pyAtoms = pyimport("ase").Atoms
-    return pyAtoms(atoms, cell = cell, pbc = true)
-end
-
-function read_atoms(path::String)
-    read = pyimport("ase.io").read
-    return read(path)
-end
-
-function write_atoms(path::String, atoms::PyObject)
-    @assert pyisinstance(atoms, pyimport("ase").Atoms)
-    write = pyimport("ase.io").write
-    return write(path, atoms)
+function ASEAtoms(system::AbstractSystem{3})
+    symbols = string.(atomic_symbol(system))
+    positions = ustrip.((u"Å",), reduce(hcat, position(system))')
+    cell = ASE.cell.Cell(ustrip.((u"Å",), reduce(hcat, bounding_box(system))'))
+    ASEAtoms(symbols, positions, cell)
 end

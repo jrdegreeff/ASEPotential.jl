@@ -2,9 +2,9 @@
 # https://wiki.fysik.dtu.dk/ase/ase/calculators/lammpsrun.html
 
 using ASEPotential
+using InteratomicPotentials
 
-a = atoms([atom("Na", [0, 0, 0]), atom("Cl", [0, 0, 2.3608])], [6.5, 6.5, 7.7])
+atoms = ASEAtoms([ASEAtom("Na", [0.0, 0.0, 0.0]), ASEAtom("Cl", [0.0, 0.0, 2.3608])], [6.5, 6.5, 7.7])
 calculator = ASECalculator("ase.calculators.lammpsrun", :LAMMPS)
 
-@time println(get_potential_energy(a, calculator))
-@time println(get_forces(a, calculator))
+@time println(energy_and_force(atoms, calculator))

@@ -1,18 +1,32 @@
+__precompile__()
 module ASEPotential
 
-using AtomsBase
 using Atomistic
+using AtomsBase
+using InteratomicPotentials
 
 using PyCall
+using StaticArrays
 using Unitful
 
-export atom, atoms, read_atoms, write_atoms
+export ASEAtom, ASEAtoms
 include("atoms.jl")
 
-export ASECalculator, get_potential_energy, get_forces
+export ASECalculator
 include("calculators.jl")
 
-export write_trajectory
-include("visualization.jl")
+export read_atoms, write_atoms, write_trajectory
+include("io.jl")
+
+const ASE = PyNULL()
+const IO = PyNULL()
+
+function __init__()
+    copy!(ASE, pyimport_e("ase"))
+    copy!(IO, pyimport_e("ase.io"))
+    if ispynull(ASE)
+        @error "ASEPotential failed to load ase!"
+    end
+end
 
 end
